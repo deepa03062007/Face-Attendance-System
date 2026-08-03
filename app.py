@@ -384,7 +384,7 @@ def recognize():
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     recognizer = cv2.face.LBPHFaceRecognizer_create()
-    recognizer.read("trainer/trainer.yml")
+    recognizer.read("trainer.yml")
 
     detector = cv2.CascadeClassifier(
         "haarcascade_frontalface_default.xml"
