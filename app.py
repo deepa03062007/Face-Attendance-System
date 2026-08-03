@@ -116,20 +116,24 @@ def save_student():
     roll = request.form["roll"]
     department = request.form["department"]
 
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
+    try:
+        conn = sqlite3.connect("database.db", timeout=30)
+        cursor = conn.cursor()
 
-    cursor.execute(
-        "INSERT INTO students VALUES (?,?,?,?)",
-        (student_id, name, roll, department)
-    )
+        cursor.execute(
+            "INSERT INTO students VALUES (?,?,?,?)",
+            (student_id, name, roll, department)
+        )
 
-    conn.commit()
-    conn.close()
+        conn.commit()
 
-    return redirect("/capture/"+student_id)
+    except sqlite3.Error as e:
+        return f"Database Error: {e}"
 
+    finally:
+        conn.close()
 
+    return redirect("/capture/" + student_id)
 @app.route("/capture/<student_id>")
 def capture(student_id):
     return render_template("capture.html", student_id=student_id)
@@ -491,5 +495,5 @@ def save_face():
         "status": "no_face"
     }
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
 
